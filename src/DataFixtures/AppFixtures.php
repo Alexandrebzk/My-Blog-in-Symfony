@@ -15,9 +15,11 @@ class AppFixtures extends Fixture
 {
     private $encode;
 
-    public function __construct(UserPasswordEncoderInterface $encoder) {
+    public function __construct(UserPasswordEncoderInterface $encoder)
+    {
         $this->encode = $encoder;
     }
+
     #[Pure] function fiftyPercent(): bool
     {
         if (rand(0, 1))
@@ -43,6 +45,7 @@ class AppFixtures extends Fixture
                 ->setImage($bool ? 'img/man.jpg' : 'img/woman.jpg')
                 ->setLastConnection(new \DateTime());
             $manager->persist($user);
+            $users[] = $user;
             for ($i = 0; $i < rand(1, 5); $i++) {
                 $article = new Article();
                 $article
@@ -52,17 +55,18 @@ class AppFixtures extends Fixture
                     ->setCreatedAt(new \DateTime())
                     ->setSubtitle('In association with ' . $faker->titleFemale . " " . $faker->firstNameFemale)
                     ->setTitle($faker->city);
-                for ($j = 0; $j < rand(10, 15); $j++) {
-                    $comment = new Comment();
-                    $comment
-                        ->setCreatedAt(new \DateTime())
-                        ->setArticle($article)
-                        ->setComment($faker->paragraphs(2, true))
-                        ->setAuthor($user);
-                    $manager->persist($comment);
-                }
                 $manager->persist($article);
+                $articles[] = $article;
             }
+        }
+        for ($j = 0; $j < rand(100, 150); $j++) {
+            $comment = new Comment();
+            $comment
+                ->setCreatedAt(new \DateTime())
+                ->setArticle($articles[array_rand($articles)])
+                ->setComment($faker->paragraphs(2, true))
+                ->setAuthor($users[array_rand($users)]);
+            $manager->persist($comment);
         }
 
         $manager->flush();
