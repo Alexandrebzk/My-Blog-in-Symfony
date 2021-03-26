@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
-    private $articleRepository;
+    private ArticleRepository $articleRepository;
 
     #[Route('/home', name: 'home')]
     public function index(ArticleRepository $articleRepository): Response
