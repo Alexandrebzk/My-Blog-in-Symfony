@@ -9,8 +9,15 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ article.title }} | {{ article.author }}</h5>
                     <p class="card-text">{{ article.subtitle }}</p>
-                    <p class="card-body">{{ article.body }}</p>
-                    <p class="card-text">Last update : {{ article.createdAt | date("d/m/Y", "Europe/Paris") }}</p>
+                    <p class="card-body"
+                       style="text-align: justify">{{ article.body|length > 150 ? article.body|slice(0, 150) ~ ' ...' : article.body }}</p>
+                    {% set difference = date(article.createdAt|date('Y/m/d')).diff(date('now'|date('Y/m/d'))) %}
+                    {% set leftDays = difference.days %}
+                    {% if leftDays == 0 %}
+                        <small>Today</small>
+                    {% else %}
+                        <small>{{ leftDays }} days ago.</small>
+                    {% endif %}
                     <hr>
                     <a href="{{ path('article',{"id" : article.id}) }}" class="btn btn-primary d-block">Learn more</a>
                 </div>
@@ -19,5 +26,8 @@
                 <hr>
             {% endif %}
         {% endfor %}
+        <div class="col-md-12">
+            {{ knp_pagination_render(articles) }}
+        </div>
     </div>
 {% endblock %}
