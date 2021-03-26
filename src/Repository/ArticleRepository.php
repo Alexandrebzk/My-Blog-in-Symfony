@@ -47,4 +47,11 @@ class ArticleRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function findLast($count) {
+        return $this->createQueryBuilder('article')
+            ->setMaxResults($count)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }
