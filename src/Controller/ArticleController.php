@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Article;
 use App\Entity\Comment;
 use App\Form\CommentType;
-use Doctrine\DBAL\Types\DateType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +22,7 @@ class ArticleController extends AbstractController
             $comment = $form->getData();
             $comment->setCreatedAt(new \DateTime());
             $comment->setArticle($article);
+            $comment->setAuthor($this->getUser());
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($comment);
             $entityManager->flush();
