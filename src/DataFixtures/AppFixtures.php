@@ -40,8 +40,8 @@ class AppFixtures extends Fixture
             if ($k == 0) {
                 $user
                     ->setIsActive(false)
-                    ->setPseudo("Brise")
-                    ->setEmail("alexandre.barczyk@laposte.net")
+                    ->setPseudo("Pseudo incroyable")
+                    ->setEmail("mail@mail.com")
                     ->setPassword($this->encode->encodePassword($user, "1234567"))
                     ->setCreatedAt(new \DateTime())
                     ->setIsVerified(true)

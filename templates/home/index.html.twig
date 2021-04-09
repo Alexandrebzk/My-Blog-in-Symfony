@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Home{% endblock %}
 {% block body %}
     <div class="row">
         {% for index,article in articles %}
@@ -21,7 +21,7 @@
                         <small>{{ leftDays }} days ago.</small>
                     {% endif %}
                     <hr>
-                    <a href="{{ path('article',{"id" : article.id}) }}" class="btn btn-primary d-block">Learn more</a>
+                    <a href="{{ path('article_show',{"id" : article.id}) }}" class="btn btn-primary d-block">Learn more</a>
                 </div>
             </div>
             {% if(index+1)%3 == 0 %}
