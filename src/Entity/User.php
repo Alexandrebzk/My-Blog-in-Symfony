@@ -6,14 +6,16 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  */
-class User implements UserInterface, \Serializable
+class User implements UserInterface, EquatableInterface
 {
     /**
      * @ORM\Id
@@ -21,6 +23,11 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $roles = [];
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -67,6 +74,11 @@ class User implements UserInterface, \Serializable
      */
     private $isVerified = false;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isActive;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
@@ -76,6 +88,22 @@ class User implements UserInterface, \Serializable
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        return array_unique($roles);
+    }
+
+    /**
+     * @param array $roles
+     */
+    public function setRoles(array $roles): User
+    {
+        $this->roles = $roles;
+
+        return $this;
     }
 
     public function getPseudo(): ?string
@@ -198,11 +226,6 @@ class User implements UserInterface, \Serializable
         return $this;
     }
 
-    public function getRoles(): array
-    {
-        return array('ROLE_USER');
-    }
-
     public function getPassword(): ?string
     {
         return $this->password;
@@ -225,34 +248,6 @@ class User implements UserInterface, \Serializable
         return $this;
     }
 
-    /** @see \Serializable::serialize() */
-    public function serialize(): ?string
-    {
-        return serialize(array(
-            $this->id,
-            $this->email,
-            $this->password,
-            // see section on salt below
-            // $this->salt,
-        ));
-    }
-
-    /**
-     * @param $serialized
-     * @return User @see \Serializable::unserialize()
-     */
-    public function unserialize($serialized): User
-    {
-        list (
-            $this->id,
-            $this->email,
-            $this->password,
-            // see section on salt below
-            // $this->salt
-            ) = unserialize($serialized, array('allowed_classes' => false));
-        return $this;
-    }
-
     public function isVerified(): bool
     {
         return $this->isVerified;
@@ -268,5 +263,25 @@ class User implements UserInterface, \Serializable
     public function getUsername(): string
     {
         return $this->email;
+    }
+
+    public function isEqualTo(UserInterface $user): bool
+    {
+        if ($this->email !== $user->getUsername()) {
+            return false;
+        }
+        return true;
+    }
+
+    public function getIsActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
+
+        return $this;
     }
 }

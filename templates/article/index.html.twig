@@ -18,16 +18,18 @@
             {% else %}
                 <small>{{ leftDays }} days ago.</small>
             {% endif %}
-            <hr>
-            {{ form_start(formComment) }}
-            <div class="my-custom-class-for-errors">
-                {{ form_errors(formComment) }}
-            </div>
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <hr>
+                {{ form_start(formComment) }}
+                <div class="my-custom-class-for-errors">
+                    {{ form_errors(formComment) }}
+                </div>
 
-            <div class="row col-md-12">
-                {{ form_row(formComment.comment) }}
-            </div>
-            {{ form_end(formComment) }}
+                <div class="row col-md-12">
+                    {{ form_row(formComment.comment) }}
+                </div>
+                {{ form_end(formComment) }}
+            {% endif %}
         </div>
     </div>
     <hr>

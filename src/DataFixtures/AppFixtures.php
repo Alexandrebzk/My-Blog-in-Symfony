@@ -37,13 +37,28 @@ class AppFixtures extends Fixture
         for ($k = 0; $k < rand(10, 20); $k++) {
             $user = new User();
             $bool = $this->fiftyPercent();
-            $user
-                ->setPseudo($bool ? $faker->titleMale . " " . $faker->firstNameMale : $faker->titleFemale . " " . $faker->firstNameFemale)
-                ->setEmail($faker->email)
-                ->setPassword($this->encode->encodePassword($user, $user->getPseudo() . $k))
-                ->setCreatedAt(new \DateTime())
-                ->setImage($bool ? 'img/man.jpg' : 'img/woman.jpg')
-                ->setLastConnection(new \DateTime());
+            if ($k == 0) {
+                $user
+                    ->setIsActive(false)
+                    ->setPseudo("Brise")
+                    ->setEmail("alexandre.barczyk@laposte.net")
+                    ->setPassword($this->encode->encodePassword($user, "1234567"))
+                    ->setCreatedAt(new \DateTime())
+                    ->setIsVerified(true)
+                    ->setRoles(["ROLE_USER"])
+                    ->setImage('img/man.jpg')
+                    ->setLastConnection(new \DateTime());
+            } else {
+                $user
+                    ->setIsActive(false)
+                    ->setPseudo($bool ? $faker->titleMale . " " . $faker->firstNameMale : $faker->titleFemale . " " . $faker->firstNameFemale)
+                    ->setEmail($faker->email)
+                    ->setPassword($this->encode->encodePassword($user, $user->getPseudo() . $k))
+                    ->setCreatedAt(new \DateTime())
+                    ->setRoles(["ROLE_USER"])
+                    ->setImage($bool ? 'img/man.jpg' : 'img/woman.jpg')
+                    ->setLastConnection(new \DateTime());
+            }
             $manager->persist($user);
             $users[] = $user;
             for ($i = 0; $i < rand(1, 5); $i++) {
